@@ -12,27 +12,28 @@ namespace Repo_modding
         private int tab = 0; // Current tab index
         private Color backgroundColor = Color.grey; // Background color
         private bool showMenu = true; // Whether to show the menu or not
-        bool temp = false;
-        bool GodMode = false;
-        bool S_GodMode;
-        void Start() // or "public override void OnInitializeMelon()" for melon mod or plugin
+        private bool Dragable = false;
+
+        public void Start() // or "public override void OnInitializeMelon()" for melon mod or plugin
         {
             // Center the window on the screen
             windowRect.x = (Screen.width - windowRect.width) / 2;
             windowRect.y = (Screen.height - windowRect.height) / 2;
-            S_GodMode = GodMode;
         }
 
-        void OnUpdate() // for melon mod or plugin use "public override void OnUpdate()"
+        public void OnUpdate() // for melon mod or plugin use "public override void OnUpdate()"
         {
-            if (Input.GetKeyDown(KeyCode.Tab)) // Toggle the menu when the Tab key is pressed and for new key sys "if (Keyboard.current.insertKey.wasPressedThisFrame)"
+            if (Input.GetKeyDown(KeyCode.BackQuote)) // Toggle the menu when the Tab key is pressed and for new key sys "if (Keyboard.current.insertKey.wasPressedThisFrame)"
             {
                 showMenu = !showMenu;
             }
-
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                Dragable = !Dragable;
+            }
         }
 
-        void OnGUI() // add "public override" to this for melon mod 
+        public void OnGUI() // add "public override" to this for melon mod 
         {
             if (showMenu) // Only draw the menu when showMenu is true
             {
@@ -43,26 +44,39 @@ namespace Repo_modding
             }
         }
 
-        void CheatWindow(int windowID)
+        public void CheatWindow(int windowID)
         {
-            GUI.DragWindow();
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical();
-
-            GodMode = GUILayout.Toggle(GodMode, "God Mode");
-            if (S_GodMode != GodMode)
+            if (Dragable)
             {
-                S_GodMode = GodMode;
-                MelonLogger.Msg("Worked");
+                GUI.DragWindow();
             }
 
+            GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("GodMode"))
+            {
+                CheatManager.toggleGodMode();
+            }
+            if (CheatManager.C_GodModeEnabled)
+            {
+                GUILayout.Label("Enabled");
+            }
+            else
+            {
+                GUILayout.Label("Disabled");
+            }
+
+
+                GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
+
 
         }
 
         void MenuWindow(int windowID)
         {
+            bool temp = false;
             GUILayout.BeginHorizontal();
 
             // Create toggle buttons for each tab

@@ -182,18 +182,10 @@ namespace Repo_modding
             if (Input.GetKeyDown(KeyCode.Equals)) { IncreaseSpeed(); }
             if (Input.GetKeyDown(KeyCode.Minus)) { DecreaseSpeed(); }
             if (Input.GetKeyDown(KeyCode.Alpha0)) { togglePostProcessing(); }
-            if (Input.GetKeyDown(KeyCode.BackQuote)) { toggleCheatUI(); }
   
 
         }
 
-        private static void toggleCheatUI()
-        {
-            if (!CheatUI) {
-                CheatUI = new GameObject("CheatUI");
-                CheatUI.AddComponent<CheatGUI>();
-            }
-        }
     }
  
 }
