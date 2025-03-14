@@ -103,7 +103,27 @@ namespace Repo_modding
         {
             C_ZeroGravityEnabled = !C_ZeroGravityEnabled;
         }
+        public static void IncreaseSpeed()
+        {
+            CheatManager Cheats = CheatManager.instance;
+            Cheats.PlayerController.MoveSpeed += 2;
+            Cheats.PlayerController.CrouchSpeed += 1;
+            Cheats.PlayerController.SprintSpeed += 5;
+            MelonLogger.Msg($"Move Speed set to {Cheats.PlayerController.CrouchSpeed}x");
 
+        }
+        public static void DecreaseSpeed()
+        {
+            CheatManager Cheats = CheatManager.instance;
+            if (Cheats.PlayerController.MoveSpeed > 0)
+            {
+                Cheats.PlayerController.MoveSpeed -= 2;
+                Cheats.PlayerController.CrouchSpeed -= 1;
+                Cheats.PlayerController.SprintSpeed -= 5;
+            }
+
+            MelonLogger.Msg($"Move Speed set to {Cheats.PlayerController.CrouchSpeed}x");
+        }
         public static void OnUpdate()
         {
             if (CheatManager.instance.PositionStabilizeTimer > 0)
@@ -125,6 +145,8 @@ namespace Repo_modding
             if (Input.GetKeyDown(KeyCode.F6)) { verticalShiftDown(); }
             if (Input.GetKeyDown(KeyCode.F9)) { toggleCollision(); }
             if (Input.GetKeyDown(KeyCode.F10)) { toggleZeroGravity(); }
+            if (Input.GetKeyDown(KeyCode.Equals)) { IncreaseSpeed(); }
+            if (Input.GetKeyDown(KeyCode.Minus)) { DecreaseSpeed(); }
 
         }
 
