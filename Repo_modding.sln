@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35818.85
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repo_modding", "Repo_modding\Repo_modding.csproj", "{72A542D3-F93E-489E-9417-FE3AB6E3E891}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72A542D3-F93E-489E-9417-FE3AB6E3E891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72A542D3-F93E-489E-9417-FE3AB6E3E891}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72A542D3-F93E-489E-9417-FE3AB6E3E891}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72A542D3-F93E-489E-9417-FE3AB6E3E891}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2522C942-2491-401A-93E8-48982DFC65B4}
+	EndGlobalSection
+EndGlobal
