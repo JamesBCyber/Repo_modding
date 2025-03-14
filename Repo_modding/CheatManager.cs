@@ -11,47 +11,48 @@ namespace Repo_modding
     {
         private static CheatManager instance;
 
+        private GameObject Player;
         private GameObject Controller;
         private GameObject Collision;
         private PlayerController PlayerController;
         private PlayerHealth PlayerHealth;
-        private FieldInfo FieldGodMode;
-        private FieldInfo FieldExtraJump;
+        private static FieldInfo FieldGodMode;
+        private static FieldInfo FieldExtraJump;
 
         private Vector3 PlayerPosition;
+        private int PositionStabilizeTimer;
 
         public static bool UpdatePlayerSignal = false;
-        private int PositionStabilizeTimer;
         private static bool C_GodModeEnabled = false;
         private static bool C_InfEnergyEnabled = false;
         private static bool C_InfJumpsEnabled = false;
-        private static bool C_CollisionEnabled = true;
         private static bool C_PreventTumble = false;
+        private static bool C_CollisionEnabled = true;
+        private static bool C_ZeroGravityEnabled = false;
 
         public static void Start()
         {
             MelonLogger.Msg("Cheats Starting Point");
             CheatManager.instance = new CheatManager();
+            FieldGodMode = typeof(PlayerHealth).GetField("godMode", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldExtraJump = typeof(PlayerController).GetField("JumpExtraCurrent", BindingFlags.NonPublic | BindingFlags.Instance);
         }
+
         public static void UpdatePlayer()
         {
             CheatManager Cheats = CheatManager.instance;
 
-            Cheats.Controller = GameObject.Find("Player").transform.Find("Controller").gameObject;
-            if (!Cheats.Controller)
-            {
-                MelonLogger.Msg("Could not Find Player Object");
-                return;
-            }
+            Cheats.Player = GameObject.Find("Player");
+            Cheats.Controller = Cheats.Player.transform.Find("Controller").gameObject;
             Cheats.Collision = Cheats.Controller.gameObject.transform.Find("Collision").gameObject;
             Cheats.PlayerController = Cheats.Controller.gameObject.GetComponent<PlayerController>();
             Cheats.PlayerHealth = Cheats.PlayerController.playerAvatar.gameObject.GetComponent<PlayerHealth>();
-            Cheats.FieldGodMode = typeof(PlayerHealth).GetField("godMode", BindingFlags.NonPublic | BindingFlags.Instance);
-            Cheats.FieldExtraJump = typeof(PlayerController).GetField("JumpExtraCurrent", BindingFlags.NonPublic | BindingFlags.Instance);
+
 
             Cheats.PlayerController.DebugEnergy = C_InfEnergyEnabled;
-            Cheats.FieldGodMode.SetValue(Cheats.PlayerHealth, C_GodModeEnabled);
+            FieldGodMode.SetValue(Cheats.PlayerHealth, C_GodModeEnabled);
 
+            CheatManager.UpdatePlayerSignal = false;
             MelonLogger.Msg("Player Updated");
 
         }
@@ -59,7 +60,7 @@ namespace Repo_modding
         public static void toggleGodMode()
         {
             C_GodModeEnabled = !C_GodModeEnabled;
-            CheatManager.instance.FieldGodMode.SetValue(CheatManager.instance.PlayerHealth, C_GodModeEnabled);
+            FieldGodMode.SetValue(CheatManager.instance.PlayerHealth, C_GodModeEnabled);
             MelonLogger.Msg($"GodMode set to {C_GodModeEnabled}");
         }
         public static void toggleInfEngergy()
@@ -98,6 +99,10 @@ namespace Repo_modding
             C_CollisionEnabled = !C_CollisionEnabled;
             CheatManager.instance.Collision.SetActive(C_CollisionEnabled);
         }
+        public static void toggleZeroGravity()
+        {
+            C_ZeroGravityEnabled = !C_ZeroGravityEnabled;
+        }
 
         public static void OnUpdate()
         {
@@ -107,7 +112,8 @@ namespace Repo_modding
                 CheatManager.instance.PositionStabilizeTimer -= 1;
             }
             if (UpdatePlayerSignal) { CheatManager.UpdatePlayer(); }
-            if (C_InfJumpsEnabled) { CheatManager.instance.FieldExtraJump.SetValue(CheatManager.instance.PlayerController, 1); }
+            if (C_InfJumpsEnabled) { FieldExtraJump.SetValue(CheatManager.instance.PlayerController, 1); }
+            if (C_ZeroGravityEnabled) { CheatManager.instance.PlayerController.AntiGravity((float) 0.1); }
 
 
             // Cheat Keys
@@ -118,6 +124,7 @@ namespace Repo_modding
             if (Input.GetKeyDown(KeyCode.F5)) { verticalShiftUp(); }
             if (Input.GetKeyDown(KeyCode.F6)) { verticalShiftDown(); }
             if (Input.GetKeyDown(KeyCode.F9)) { toggleCollision(); }
+            if (Input.GetKeyDown(KeyCode.F10)) { toggleZeroGravity(); }
 
         }
 
