@@ -9,100 +9,108 @@ namespace Repo_modding
 {
     public class CheatManager
     {
-        private GameObject _MainController;
-        private GameObject _PlayerCollision;
-        private PlayerController _PlayerController;
-        private PlayerHealth _PlayerHealth;
-        private FieldInfo _godModeInfo;
-        private FieldInfo _extraJumpCurrentInfo;
+        private static CheatManager instance;
 
-        private Vector3 _PlayerPos;
+        private GameObject Controller;
+        private GameObject Collision;
+        private PlayerController PlayerController;
+        private PlayerHealth PlayerHealth;
+        private FieldInfo FieldGodMode;
+        private FieldInfo FieldExtraJump;
 
-        private int PosStablize;
-        private bool godModeEnabled = false;
-        private bool infEnergyEnabled = false;
-        private bool infJumpsEnabled = false;
-        private bool CollisionEnabled = true;
-        private bool PreventTumble = false;
+        private Vector3 PlayerPosition;
 
-        public void UpdatePlayer()
+        private int PositionStabilizeTimer;
+        private static bool C_GodModeEnabled = false;
+        private static bool C_InfEnergyEnabled = false;
+        private static bool C_InfJumpsEnabled = false;
+        private static bool C_CollisionEnabled = true;
+        private static bool C_PreventTumble = false;
+
+        public static void Start()
         {
+            MelonLogger.Msg("Cheats Starting Point");
+            CheatManager.instance = new CheatManager();
+        }
+        public static void UpdatePlayer()
+        {
+            CheatManager Cheats = CheatManager.instance;
             // update GameObject Player
             // get child GameObject Controller from parent GameObject Player
             // originalGameObject.transform.GetChild(0).gameObject
-            _MainController = GameObject.Find("Player").transform.Find("Controller").gameObject;
-            if (!_MainController)
+            Cheats.Controller = GameObject.Find("Player").transform.Find("Controller").gameObject;
+            if (!Cheats.Controller)
             {
                 MelonLogger.Msg("Could not Find Player Object");
                 return;
             }
-            _PlayerCollision = _MainController.gameObject.transform.Find("Collision").gameObject;
-            _PlayerController = _MainController.gameObject.GetComponent<PlayerController>();
-            _PlayerHealth = _PlayerController.playerAvatar.gameObject.GetComponent<PlayerHealth>();
+            Cheats.Collision = Cheats.Controller.gameObject.transform.Find("Collision").gameObject;
+            Cheats.PlayerController = Cheats.Controller.gameObject.GetComponent<PlayerController>();
+            Cheats.PlayerHealth = Cheats.PlayerController.playerAvatar.gameObject.GetComponent<PlayerHealth>();
             // binding for private variables
-            _godModeInfo = typeof(PlayerHealth).GetField("godMode", BindingFlags.NonPublic | BindingFlags.Instance);
-            _extraJumpCurrentInfo = typeof(PlayerController).GetField("JumpExtraCurrent", BindingFlags.NonPublic | BindingFlags.Instance);
+            Cheats.FieldGodMode = typeof(PlayerHealth).GetField("godMode", BindingFlags.NonPublic | BindingFlags.Instance);
+            Cheats.FieldExtraJump = typeof(PlayerController).GetField("JumpExtraCurrent", BindingFlags.NonPublic | BindingFlags.Instance);
 
             // apply modifiers from previous player
-            _PlayerController.DebugEnergy = infEnergyEnabled;
-            _godModeInfo.SetValue(_PlayerHealth, godModeEnabled);
+            Cheats.PlayerController.DebugEnergy = C_InfEnergyEnabled;
+            Cheats.FieldGodMode.SetValue(Cheats.PlayerHealth, C_GodModeEnabled);
 
             MelonLogger.Msg("Player Updated");
 
         }
 
-        public void toggleGodMode()
+        public static void toggleGodMode()
         {
-            godModeEnabled = !godModeEnabled;
-            _godModeInfo.SetValue(_PlayerHealth, godModeEnabled);
-            MelonLogger.Msg($"GodMode set to {godModeEnabled}");
+            C_GodModeEnabled = !C_GodModeEnabled;
+            CheatManager.instance.FieldGodMode.SetValue(CheatManager.instance.PlayerHealth, C_GodModeEnabled);
+            MelonLogger.Msg($"GodMode set to {C_GodModeEnabled}");
         }
-        public void toggleInfEngergy()
+        public static void toggleInfEngergy()
         {
-            infEnergyEnabled = !infEnergyEnabled;
-            _PlayerController.DebugEnergy = infEnergyEnabled;
-            MelonLogger.Msg($"DebugEnergy set to {infEnergyEnabled}");
+            C_InfEnergyEnabled = !C_InfEnergyEnabled;
+            CheatManager.instance.PlayerController.DebugEnergy = C_InfEnergyEnabled;
+            MelonLogger.Msg($"DebugEnergy set to {C_InfEnergyEnabled}");
         }
-        public void toggleInfJump()
+        public static void toggleInfJump()
         {
-            infJumpsEnabled = !infJumpsEnabled;
-            MelonLogger.Msg($"InfinateJumps set to {infJumpsEnabled}");
+            C_InfJumpsEnabled = !C_InfJumpsEnabled;
+            MelonLogger.Msg($"InfinateJumps set to {C_InfJumpsEnabled}");
         }
-        public void toggleTumble()
+        public static void toggleTumble()
         {
-            PreventTumble = !PreventTumble;
-            _PlayerController.DebugNoTumble = PreventTumble;
-            MelonLogger.Msg($"PreventTumble set to {PreventTumble}");
+            C_PreventTumble = !C_PreventTumble;
+            CheatManager.instance.PlayerController.DebugNoTumble = C_PreventTumble;
+            MelonLogger.Msg($"PreventTumble set to {C_PreventTumble}");
         }
-        public void verticalShiftUp()
+        public static void verticalShiftUp()
         {
-            _PlayerPos = _MainController.transform.position;
-            _PlayerPos += Vector3.up * 5;
-            PosStablize = 5;
+            CheatManager.instance.PlayerPosition = CheatManager.instance.Controller.transform.position;
+            CheatManager.instance.PlayerPosition += Vector3.up * 5;
+            CheatManager.instance.PositionStabilizeTimer = 5;
             MelonLogger.Msg("Vertical Shift UP");
         }
-        public void verticalShiftDown()
+        public static void verticalShiftDown()
         {
-            _PlayerPos = _MainController.transform.position;
-            _PlayerPos += Vector3.down * _PlayerPos.y;
-            PosStablize = 5;
+            CheatManager.instance.PlayerPosition = CheatManager.instance.Controller.transform.position;
+            CheatManager.instance.PlayerPosition += Vector3.down * CheatManager.instance.PlayerPosition.y;
+            CheatManager.instance.PositionStabilizeTimer = 5;
             MelonLogger.Msg("Vertical Shift DOWN");
         }
-        public void toggleCollision()
+        public static void toggleCollision()
         {
-            CollisionEnabled = !CollisionEnabled;
-            _PlayerCollision.SetActive(CollisionEnabled);
+            C_CollisionEnabled = !C_CollisionEnabled;
+            CheatManager.instance.Collision.SetActive(C_CollisionEnabled);
         }
 
-        public void OnUpdate()
+        public static void OnUpdate()
         {
-            if (PosStablize > 0)
+            if (CheatManager.instance.PositionStabilizeTimer > 0)
             {
-                _MainController.transform.transform.position = _PlayerPos;
-                PosStablize -= 1;
+                CheatManager.instance.Controller.transform.transform.position = CheatManager.instance.PlayerPosition;
+                CheatManager.instance.PositionStabilizeTimer -= 1;
             }
-            if (Globals.UpdatePlayer) { UpdatePlayer(); Globals.UpdatePlayer = false; }
-            if (infJumpsEnabled) { _extraJumpCurrentInfo.SetValue(_PlayerController, 1); }
+            if (Globals.UpdatePlayer) { CheatManager.UpdatePlayer(); Globals.UpdatePlayer = false; }
+            if (C_InfJumpsEnabled) { CheatManager.instance.FieldExtraJump.SetValue(CheatManager.instance.PlayerController, 1); }
 
 
             // Cheat Keys

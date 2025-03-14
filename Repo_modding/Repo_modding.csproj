@@ -347,6 +347,7 @@
 	<ItemGroup>
 		<Compile Include="CheatManager.cs" />
 		<Compile Include="Core.cs" />
+		<Compile Include="Hooks.cs" />
 	</ItemGroup>
 	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
