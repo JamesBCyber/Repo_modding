@@ -20,6 +20,7 @@ namespace Repo_modding
 
         private Vector3 PlayerPosition;
 
+        public static bool UpdatePlayerSignal = false;
         private int PositionStabilizeTimer;
         private static bool C_GodModeEnabled = false;
         private static bool C_InfEnergyEnabled = false;
@@ -35,9 +36,7 @@ namespace Repo_modding
         public static void UpdatePlayer()
         {
             CheatManager Cheats = CheatManager.instance;
-            // update GameObject Player
-            // get child GameObject Controller from parent GameObject Player
-            // originalGameObject.transform.GetChild(0).gameObject
+
             Cheats.Controller = GameObject.Find("Player").transform.Find("Controller").gameObject;
             if (!Cheats.Controller)
             {
@@ -47,11 +46,9 @@ namespace Repo_modding
             Cheats.Collision = Cheats.Controller.gameObject.transform.Find("Collision").gameObject;
             Cheats.PlayerController = Cheats.Controller.gameObject.GetComponent<PlayerController>();
             Cheats.PlayerHealth = Cheats.PlayerController.playerAvatar.gameObject.GetComponent<PlayerHealth>();
-            // binding for private variables
             Cheats.FieldGodMode = typeof(PlayerHealth).GetField("godMode", BindingFlags.NonPublic | BindingFlags.Instance);
             Cheats.FieldExtraJump = typeof(PlayerController).GetField("JumpExtraCurrent", BindingFlags.NonPublic | BindingFlags.Instance);
 
-            // apply modifiers from previous player
             Cheats.PlayerController.DebugEnergy = C_InfEnergyEnabled;
             Cheats.FieldGodMode.SetValue(Cheats.PlayerHealth, C_GodModeEnabled);
 
@@ -109,7 +106,7 @@ namespace Repo_modding
                 CheatManager.instance.Controller.transform.transform.position = CheatManager.instance.PlayerPosition;
                 CheatManager.instance.PositionStabilizeTimer -= 1;
             }
-            if (Globals.UpdatePlayer) { CheatManager.UpdatePlayer(); Globals.UpdatePlayer = false; }
+            if (UpdatePlayerSignal) { CheatManager.UpdatePlayer(); }
             if (C_InfJumpsEnabled) { CheatManager.instance.FieldExtraJump.SetValue(CheatManager.instance.PlayerController, 1); }
 
 

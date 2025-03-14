@@ -11,8 +11,8 @@ namespace Repo_modding
         public static void Postfix()
         {
             // runs after level generation and player spawn
+            CheatManager.UpdatePlayerSignal = true;
             MelonLogger.Msg("Level Generation Complete");
-            Globals.UpdatePlayer = true;
         }
     }
 }
