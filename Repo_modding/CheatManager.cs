@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 
@@ -15,9 +16,13 @@ namespace Repo_modding
         private GameObject Controller;
         private GameObject Collision;
         private PlayerController PlayerController;
+        private GameObject PlayerAvatar;
+        private PhysGrabber PhysGrabber;
         private PlayerHealth PlayerHealth;
+        private GameObject PostProcessing;
         private static FieldInfo FieldGodMode;
         private static FieldInfo FieldExtraJump;
+        private static float OldStrength;
 
         private Vector3 PlayerPosition;
         private int PositionStabilizeTimer;
@@ -29,6 +34,7 @@ namespace Repo_modding
         private static bool C_PreventTumble = false;
         private static bool C_CollisionEnabled = true;
         private static bool C_ZeroGravityEnabled = false;
+        private static bool C_StrengthEnabled = false;
 
         public static void Start()
         {
@@ -46,8 +52,11 @@ namespace Repo_modding
             Cheats.Controller = Cheats.Player.transform.Find("Controller").gameObject;
             Cheats.Collision = Cheats.Controller.gameObject.transform.Find("Collision").gameObject;
             Cheats.PlayerController = Cheats.Controller.gameObject.GetComponent<PlayerController>();
-            Cheats.PlayerHealth = Cheats.PlayerController.playerAvatar.gameObject.GetComponent<PlayerHealth>();
-
+            Cheats.PlayerAvatar = Cheats.PlayerController.playerAvatar.gameObject;
+            Cheats.PlayerHealth = Cheats.PlayerAvatar.GetComponent<PlayerHealth>();
+            Cheats.PostProcessing = GameObject.Find("Post Processing");
+            Cheats.PhysGrabber = Cheats.PlayerAvatar.GetComponent<PhysGrabber>();
+            CheatManager.OldStrength = Cheats.PhysGrabber.grabStrength;
 
             Cheats.PlayerController.DebugEnergy = C_InfEnergyEnabled;
             FieldGodMode.SetValue(Cheats.PlayerHealth, C_GodModeEnabled);
@@ -124,6 +133,25 @@ namespace Repo_modding
 
             MelonLogger.Msg($"Move Speed set to {Cheats.PlayerController.CrouchSpeed}x");
         }
+        public static void togglePostProcessing()
+        {
+            bool active = !CheatManager.instance.PostProcessing.activeSelf;
+            CheatManager.instance.PostProcessing.SetActive(active);
+        }
+        private static void toggleStrength()
+        {
+            C_StrengthEnabled = !C_StrengthEnabled;
+            PhysGrabber phys = CheatManager.instance.PhysGrabber;
+            if (C_StrengthEnabled)
+            {
+                phys.grabStrength = CheatManager.OldStrength;
+            }
+            else
+            {
+                phys.grabStrength = 5;
+            }
+            MelonLogger.Msg($"Set Strength to {phys.grabStrength}");
+        }
         public static void OnUpdate()
         {
             if (CheatManager.instance.PositionStabilizeTimer > 0)
@@ -143,14 +171,14 @@ namespace Repo_modding
             if (Input.GetKeyDown(KeyCode.F4)) { toggleTumble(); }
             if (Input.GetKeyDown(KeyCode.F5)) { verticalShiftUp(); }
             if (Input.GetKeyDown(KeyCode.F6)) { verticalShiftDown(); }
+            if (Input.GetKeyDown(KeyCode.F8)) { toggleStrength(); }
             if (Input.GetKeyDown(KeyCode.F9)) { toggleCollision(); }
             if (Input.GetKeyDown(KeyCode.F10)) { toggleZeroGravity(); }
             if (Input.GetKeyDown(KeyCode.Equals)) { IncreaseSpeed(); }
             if (Input.GetKeyDown(KeyCode.Minus)) { DecreaseSpeed(); }
+            if (Input.GetKeyDown(KeyCode.Alpha0)) { togglePostProcessing(); }
+  
 
         }
-
-
-
     }
 }
