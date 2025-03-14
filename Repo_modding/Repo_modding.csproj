@@ -347,6 +347,7 @@
 	<ItemGroup>
 		<Compile Include="CheatManager.cs" />
 		<Compile Include="Core.cs" />
+		<Compile Include="GUI.cs" />
 		<Compile Include="Hooks.cs" />
 	</ItemGroup>
 	

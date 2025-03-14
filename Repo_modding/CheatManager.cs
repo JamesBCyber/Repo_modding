@@ -8,9 +8,11 @@ using UnityEngine;
 
 namespace Repo_modding
 {
+
     public class CheatManager
     {
         private static CheatManager instance;
+        public static GameObject CheatUI;
 
         private GameObject Player;
         private GameObject Controller;
@@ -28,20 +30,22 @@ namespace Repo_modding
         private int PositionStabilizeTimer;
 
         public static bool UpdatePlayerSignal = false;
-        private static bool C_GodModeEnabled = false;
-        private static bool C_InfEnergyEnabled = false;
-        private static bool C_InfJumpsEnabled = false;
-        private static bool C_PreventTumble = false;
-        private static bool C_CollisionEnabled = true;
-        private static bool C_ZeroGravityEnabled = false;
-        private static bool C_StrengthEnabled = false;
+        public static bool C_GodModeEnabled = false;
+        public static bool C_InfEnergyEnabled = false;
+        public static bool C_InfJumpsEnabled = false;
+        public static bool C_PreventTumble = false;
+        public static bool C_CollisionEnabled = true;
+        public static bool C_ZeroGravityEnabled = false;
+        public static bool C_StrengthEnabled = false;
 
         public static void Start()
         {
-            MelonLogger.Msg("Cheats Starting Point");
+            
             CheatManager.instance = new CheatManager();
             FieldGodMode = typeof(PlayerHealth).GetField("godMode", BindingFlags.NonPublic | BindingFlags.Instance);
             FieldExtraJump = typeof(PlayerController).GetField("JumpExtraCurrent", BindingFlags.NonPublic | BindingFlags.Instance);
+            
+
         }
 
         public static void UpdatePlayer()
@@ -177,8 +181,18 @@ namespace Repo_modding
             if (Input.GetKeyDown(KeyCode.Equals)) { IncreaseSpeed(); }
             if (Input.GetKeyDown(KeyCode.Minus)) { DecreaseSpeed(); }
             if (Input.GetKeyDown(KeyCode.Alpha0)) { togglePostProcessing(); }
+            if (Input.GetKeyDown(KeyCode.BackQuote)) { toggleCheatUI(); }
   
 
         }
+
+        private static void toggleCheatUI()
+        {
+            if (!CheatUI) {
+                CheatUI = new GameObject("CheatUI");
+                CheatUI.AddComponent<MenuExample>();
+            }
+        }
     }
+ 
 }
