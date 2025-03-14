@@ -53,6 +53,7 @@ namespace Repo_modding
             CheatManager Cheats = CheatManager.instance;
 
             Cheats.Player = GameObject.Find("Player");
+            Cheats.Player.AddComponent<CheatGUI>();
             Cheats.Controller = Cheats.Player.transform.Find("Controller").gameObject;
             Cheats.Collision = Cheats.Controller.gameObject.transform.Find("Collision").gameObject;
             Cheats.PlayerController = Cheats.Controller.gameObject.GetComponent<PlayerController>();
@@ -190,7 +191,7 @@ namespace Repo_modding
         {
             if (!CheatUI) {
                 CheatUI = new GameObject("CheatUI");
-                CheatUI.AddComponent<MenuExample>();
+                CheatUI.AddComponent<CheatGUI>();
             }
         }
     }

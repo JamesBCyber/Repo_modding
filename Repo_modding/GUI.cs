@@ -1,22 +1,26 @@
-﻿using System;
+﻿using MelonLoader;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
 namespace Repo_modding
 {
-    public class MenuExample : MonoBehaviour
+    public class CheatGUI : MonoBehaviour
     {
         private Rect windowRect = new Rect(0, 0, 400, 400); // Window position and size
         private int tab = 0; // Current tab index
         private Color backgroundColor = Color.grey; // Background color
         private bool showMenu = true; // Whether to show the menu or not
         bool temp = false;
+        bool GodMode = false;
+        bool S_GodMode;
         void Start() // or "public override void OnInitializeMelon()" for melon mod or plugin
         {
             // Center the window on the screen
             windowRect.x = (Screen.width - windowRect.width) / 2;
             windowRect.y = (Screen.height - windowRect.height) / 2;
+            S_GodMode = GodMode;
         }
 
         void OnUpdate() // for melon mod or plugin use "public override void OnUpdate()"
@@ -25,6 +29,7 @@ namespace Repo_modding
             {
                 showMenu = !showMenu;
             }
+
         }
 
         void OnGUI() // add "public override" to this for melon mod 
@@ -34,8 +39,26 @@ namespace Repo_modding
                 // Set the background color
                 GUI.backgroundColor = backgroundColor;
 
-                windowRect = GUI.Window(0, windowRect, MenuWindow, "Menu SDK <WoodgamerHD>"); // Create the window with title "Menu"
+                windowRect = GUI.Window(0, windowRect, CheatWindow, "Repo Cheats... Cause why not?"); // Create the window with title "Menu"
             }
+        }
+
+        void CheatWindow(int windowID)
+        {
+            GUI.DragWindow();
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
+
+            GodMode = GUILayout.Toggle(GodMode, "God Mode");
+            if (S_GodMode != GodMode)
+            {
+                S_GodMode = GodMode;
+                MelonLogger.Msg("Worked");
+            }
+
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
         }
 
         void MenuWindow(int windowID)
@@ -70,7 +93,7 @@ namespace Repo_modding
 
                     GUILayout.BeginHorizontal();
                     GUILayout.BeginVertical();
-                    temp = GUILayout.Toggle(temp, "temp");
+                    
                     temp = GUILayout.Toggle(temp, "temp");
                     temp = GUILayout.Toggle(temp, "temp");
                     temp = GUILayout.Toggle(temp, "temp");
