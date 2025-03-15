@@ -53,7 +53,6 @@ namespace Repo_modding
             CheatManager Cheats = CheatManager.instance;
 
             Cheats.Player = GameObject.Find("Player");
-            Cheats.Player.AddComponent<CheatGUI>();
             Cheats.Controller = Cheats.Player.transform.Find("Controller").gameObject;
             Cheats.Collision = Cheats.Controller.gameObject.transform.Find("Collision").gameObject;
             Cheats.PlayerController = Cheats.Controller.gameObject.GetComponent<PlayerController>();
@@ -157,6 +156,10 @@ namespace Repo_modding
             }
             MelonLogger.Msg($"Set Strength to {phys.grabStrength}");
         }
+        public static void disableMapOverlay()
+        {
+            GameObject.Find("Over Layer").SetActive(false);
+        }
         public static void OnUpdate()
         {
             if (CheatManager.instance.PositionStabilizeTimer > 0)
@@ -166,7 +169,7 @@ namespace Repo_modding
             }
             if (UpdatePlayerSignal) { CheatManager.UpdatePlayer(); }
             if (C_InfJumpsEnabled) { FieldExtraJump.SetValue(CheatManager.instance.PlayerController, 1); }
-            if (C_ZeroGravityEnabled) { CheatManager.instance.PlayerController.AntiGravity((float) 0.1); }
+            if (C_ZeroGravityEnabled) { CheatManager.instance.PlayerController.AntiGravity(0.1f); }
 
 
             // Cheat Keys
@@ -182,7 +185,7 @@ namespace Repo_modding
             if (Input.GetKeyDown(KeyCode.Equals)) { IncreaseSpeed(); }
             if (Input.GetKeyDown(KeyCode.Minus)) { DecreaseSpeed(); }
             if (Input.GetKeyDown(KeyCode.Alpha0)) { togglePostProcessing(); }
-  
+            if (Input.GetKeyDown(KeyCode.Alpha9)) { disableMapOverlay(); }
 
         }
 
