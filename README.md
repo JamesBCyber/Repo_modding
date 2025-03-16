@@ -2,6 +2,11 @@
 This is a really basic mod for the video game REPO that uses [MelonLoader](https://melonwiki.xyz/#/)<br/>
 It's my first Unity mod to get into game hacking/modding and adds a bunch of keybinds for different cheats, some of which are disabled features left in the release but turned off for players<br/>
 
+## Disclaimer
+This mod's source code is provided for educational and non-malicious use only. It is not intended for cheating, harassment, or any activity that violates the game's terms of service. I am not responsible for any consequences resulting from its use, including bans, damages, broken friendships, or other issues.<br/>
+No release build is provided—anyone using this source code must compile it themselves.<br/>
+Use this code responsibly.<br/>
+
 ## Interface
 This is a basic mod before knowing how to create a proper interface in Unity/C# so most of the effects print a message in the Melonloader pop up window for you to know what is happening when you press one of the hotkeys<br/>
 Maybe sometime in the future I will learn how to make a GUI and render something for a better user experience but this is whats gonna have to work for the moment<br/>
