@@ -1,4 +1,4 @@
-# REPO
+# REPO Mod/Cheats
 This is a really basic mod for the video game REPO that uses [MelonLoader](https://melonwiki.xyz/#/)<br/>
 It's my first Unity mod to get into game hacking/modding and adds a bunch of keybinds for different cheats, some of which are disabled features left in the release but turned off for players<br/>
 
